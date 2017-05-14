@@ -29,9 +29,9 @@
                 "type": "font"
             },
             {
-                "file": "images/check.bmp",
+                "file": "images/logo",
                 "menuIcon": true,
-                "name": "IMAGES_CHECK_BMP",
+                "name": "IMAGES_LOGO",
                 "type": "bitmap"
             }
         ]

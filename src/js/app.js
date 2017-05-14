@@ -1,6 +1,7 @@
 var UI = require('ui');
 var ajax = require('ajax');
 var Settings = require('settings');
+var Feature = require('platform/feature');
 
 var appUrl = 'https://markeev.com/pebble/tasks.html';
 
@@ -117,21 +118,31 @@ var task_id = '';
 function taskSelected(e, id)
 {
     task_id = id;
+    
+    var card = new UI.Card({
+        body: e.item.title + "\n\n* Long click select to mark as completed!",
+        scrollable: true
+    });
+    card.on('longClick', 'select', function(){ markAsCompleted(card, e.menu); });
+    card.show();
+}
 
-    console.log('POST ' + baseApiUrl + '/me/outlook/tasks/' + id + '/complete');
+function markAsCompleted(card, menu) {
+    console.log('POST ' + baseApiUrl + '/me/outlook/tasks/' + task_id + '/complete');
     
     ajax(
         {
             method: 'POST',
-            url: baseApiUrl + '/me/outlook/tasks/' + id + '/complete',
+            url: baseApiUrl + '/me/outlook/tasks/' + task_id + '/complete',
             headers: { "Authorization": "Bearer " + access_token }
         },
         function(data) {
-            e.menu.hide();
+            card.hide();
+            menu.hide();
             folderSelected(null, folder_id);
         },
         showError
-    );        
+    );
 }
 
 
@@ -155,6 +166,7 @@ function showMenu(title, data, title_property, select_callback)
         ids.push(dataObj.value[i].id);
     }
     var menu = new UI.Menu({
+        highlightBackgroundColor: Feature.color('#FFAA00', 'black'),
         sections: [
             {
                 title: title,
